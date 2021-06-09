@@ -106,7 +106,8 @@ class PeminjamanController extends Controller
         }else{
             return response([
                 'success'=>false,
-                'status'=>'Data Kosong'
+                'status'=>'Data Kosong',
+                'message' => 'Data Kosong'
             ]);
         }
     }

@@ -39,6 +39,21 @@ Route::namespace('User')->group(function(){
 
 });
 
+// No Auth Token 
+// -------------------------
+
+// Halaman Beranda
+Route::get("beritaberanda",'User\BeritaController@beritaberanda');
+
+Route::get("detailberita/{id}",'User\BeritaController@detailberita');
+
+Route::get("ruanganberanda",'User\RuanganController@ruangan');
+
+Route::get("detailruangan/{id}",'User\RuanganController@detailruangan');
+
+Route::get("galeriuser",'User\GaleriUserController@galeriuser');
+
+// Auth Token User
 Route::middleware('auth:api')->group(function () {
 
     // Flow Peminjaman
@@ -60,9 +75,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post("peminjamanuser/edit", 'User\PeminjamanUserController@peminjamanEdit');
 
     Route::delete("peminjamanuser/{id}", 'User\PeminjamanUserController@peminjamanDelete');
+
+    // Halaman Beranda
+
 });
 
 
+// Auth Token Admin
 Route::middleware('auth:admin')->group(function () {
 
     // Admin EndPoint API
@@ -118,4 +137,12 @@ Route::middleware('auth:admin')->group(function () {
     Route::post("peminjaman/update", 'CMS\PeminjamanController@peminjamanUpdate');
 
     Route::delete("peminjaman/{id}", 'CMS\PeminjamanController@peminjamanDelete');
+
+    // Galeri Endpoint API
+
+    Route::get("galericms",'CMS\GaleriController@galeri');
+
+    Route::post("galericms", 'CMS\GaleriController@galeriSave');
+
+    Route::delete("galericms/{id}", 'CMS\GaleriController@galeriDelete');
 });
