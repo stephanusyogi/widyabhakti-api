@@ -45,28 +45,32 @@ Route::namespace('User')->group(function(){
 // Halaman Beranda
 Route::get("beritaberanda",'User\BeritaController@beritaberanda');
 
+Route::get("beritauser",'User\BeritaController@beritauser');
+
 Route::get("detailberita/{id}",'User\BeritaController@detailberita');
 
 Route::get("ruanganberanda",'User\RuanganController@ruangan');
 
 Route::get("detailruangan/{id}",'User\RuanganController@detailruangan');
 
+Route::get("fasilitasuser",'User\FasilitasUserController@fasilitasuser');
+
 Route::get("galeriuser",'User\GaleriUserController@galeriuser');
+
+Route::get("ruanganpeminjaman",'User\PeminjamanUserController@ruanganpeminjaman');
+
+Route::post("checkpeminjaman",'User\PeminjamanUserController@checkpeminjaman');
+
+Route::post("peminjamanuser", 'User\PeminjamanUserController@peminjamanStore');
 
 // Auth Token User
 Route::middleware('auth:api')->group(function () {
 
     // Flow Peminjaman
-
-    Route::get("ruanganpeminjaman",'User\PeminjamanUserController@ruanganpeminjaman');
-
     Route::post("dataforform",'User\PeminjamanUserController@dataforform');
-    
-    Route::post("checkpeminjaman",'User\PeminjamanUserController@checkpeminjaman');
 
     Route::post("validasiwaktu",'User\PeminjamanUserController@validasiwaktu');
 
-    Route::post("peminjamanuser", 'User\PeminjamanUserController@peminjamanStore');
 
     // Halaman profil
 
@@ -120,6 +124,8 @@ Route::middleware('auth:admin')->group(function () {
     // Ruangan EndPoint API
     Route::get("ruangan",'CMS\RuanganController@ruangan');
 
+    Route::get("ruanganById/{id}",'CMS\RuanganController@ruanganById');
+
     Route::post("ruangan", 'CMS\RuanganController@ruanganSave');
 
     Route::post("ruangan/update", 'CMS\RuanganController@ruanganUpdate');
@@ -131,6 +137,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get("peminjaman",'CMS\PeminjamanController@peminjaman');
 
     Route::get("peminjamanrutin",'CMS\PeminjamanController@peminjamanrutin');
+
+    Route::get("peminjamanById/{id}",'CMS\PeminjamanController@peminjamanById');
 
     Route::post("peminjaman", 'CMS\PeminjamanController@peminjamanSave');
 
@@ -145,4 +153,12 @@ Route::middleware('auth:admin')->group(function () {
     Route::post("galericms", 'CMS\GaleriController@galeriSave');
 
     Route::delete("galericms/{id}", 'CMS\GaleriController@galeriDelete');
+
+    // Fasilitas Umum Endpoint API
+
+    Route::get("fasilitas",'CMS\FasilitasController@fasilitas');
+
+    Route::post("fasilitas", 'CMS\FasilitasController@fasilitasSave');
+
+    Route::delete("fasilitas/{id}", 'CMS\FasilitasController@fasilitasDelete');
 });

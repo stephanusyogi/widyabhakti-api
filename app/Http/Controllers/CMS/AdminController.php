@@ -36,13 +36,13 @@ class AdminController extends Controller
             'name' => 'required',
             'username' => 'required',
             'password' => 'required',
-            'status' => 'required'
+            'backup_psw' => 'required'
         ],
             [
                 'name.required' => 'Masukkan Nama Admin !',
                 'username.required' => 'Masukkan Username Admin !',
                 'password.required' => 'Masukkan Password Admin !',
-                'status.required' => 'Masukkan Status Admin !'
+                'backup_psw.required' => 'Masukkan Backup Password Admin !'
             ]
         );
 
@@ -57,7 +57,7 @@ class AdminController extends Controller
                 'name' => $request->input('name'),
                 'username' => $request->input('username'),
                 'password' => bcrypt($request->input('password')),
-                'status' => $request->input('status')
+                'backup_psw' => $request->input('backup_psw')
             ]);
 
             if($admin){
@@ -79,12 +79,10 @@ class AdminController extends Controller
         $validator = Validator::make($request->all(),[
             'name' => 'required',
             'username' => 'required',
-            'status' => 'required'
         ],
             [
                 'name.required' => 'Masukkan Nama Admin !',
                 'username.required' => 'Masukkan Username Admin !',
-                'status.required' => 'Masukkan Status Admin !'
             ]
         );
         
@@ -99,9 +97,7 @@ class AdminController extends Controller
         }else{
             $admin = Admin::where('id', $request->input('id'))->update([
                 'name' => $request->input('name'),
-                'username' => $request->input('username'),
-                'password' => bcrypt($request->input('password')),
-                'status' => $request->input('status') 
+                'username' => $request->input('username')
             ]);
 
             if($admin){

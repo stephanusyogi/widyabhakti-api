@@ -6,27 +6,29 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
-use App\Galeri;
+use App\Fasilitas;
 
-class GaleriController extends Controller
+class FasilitasController extends Controller
 {
     //
-    public function galeri(){
-        $galeri = Galeri::get();
-        $galeri = json_decode($galeri, true);
+    public function fasilitas(){
+        $fasilitas = Fasilitas::get();
+        $fasilitas = json_decode($fasilitas, true);
         return response([
             'success' => true,
-            'message' => 'List Semua Galeri dan Foto',
-            'data' => $galeri
+            'message' => 'List Semua Fasilitas Umum',
+            'data' => $fasilitas
         ], 200);
     }
 
-    public function galeriSave(Request $request){
+    public function fasilitasSave(Request $request){
         // Validate Data
         $validator = Validator::make($request->all(),[
+            'nama' => 'required',
             'img_dir' => 'required',
         ],
             [
+                'nama.required' => 'Masukkan Nama Fasilitas !',
                 'img_dir.required' => 'Masukkan Direktori Gambar !',
             ]
         );
@@ -38,38 +40,39 @@ class GaleriController extends Controller
                 'data' => $validator->errors()
             ], 401);
         }else{
-            $galeri = new Galeri();
-            $galeri->img_dir = $request->input('img_dir');
-            $galeri->save();
+            $fasilitas = new Fasilitas();
+            $fasilitas->nama = $request->input('nama');
+            $fasilitas->img_dir = $request->input('img_dir');
+            $fasilitas->save();
 
-            if($galeri){
+            if($fasilitas){
                 return response()->json([
                     'success' => true,
-                    'message' => 'Foto Berhasil Ter-Upload !'
+                    'message' => 'Fasilitas Berhasil Ter-Upload !'
                 ], 200);
             }else{
                 return response()->json([
                     'success' => false,
-                    'message' => 'Foto Gagal Ter-Upload !',
+                    'message' => 'Fasilitas Gagal Ter-Upload !',
                 ], 200);
             }
         }
     }
 
-    public function galeriDelete($id)
+    public function fasilitasDelete($id)
     {
-        $galeri = Galeri::where('id_photo',$id);
-        $galeri->delete();
+        $fasilitas = Fasilitas::where('id_fasilitas',$id);
+        $fasilitas->delete();
 
-        if ($galeri) {
+        if ($fasilitas) {
             return response()->json([
                 'success' => true,
-                'message' => 'Foto Berhasil Dihapus!',
+                'message' => 'Fasilitas Berhasil Dihapus!',
             ], 200);
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Foto Gagal Dihapus!',
+                'message' => 'Fasilitas Gagal Dihapus!',
             ], 400);
         }
 

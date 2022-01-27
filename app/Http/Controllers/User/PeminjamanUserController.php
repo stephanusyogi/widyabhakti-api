@@ -14,13 +14,15 @@ class PeminjamanUserController extends Controller
     // Untuk Option di Fitur Check Availeble Ruangan
     public function ruanganpeminjaman(){
         $dataruangan = DB::table('table_ruangan')
-        ->select('table_ruangan.id_ruangan','table_ruangan.nama')
+        ->select('table_ruangan.id_ruangan','table_ruangan.nama','table_ruangan.lantai')
+        ->orderBy('table_ruangan.lantai')
         ->get();
         $dataruangan_result = json_decode($dataruangan, true);
         if($dataruangan_result){
             foreach($dataruangan as $todo) {
                 $ruangan['id_ruangan'] = $todo->id_ruangan;
                 $ruangan['nama_ruangan'] = $todo->nama;
+                $ruangan['lantai'] = $todo->lantai;
             
                 $data_id_ruangan[] = $ruangan;
             }
@@ -32,7 +34,8 @@ class PeminjamanUserController extends Controller
         }else{
             return response([
                 'success'=>false,
-                'status'=>'Data Kosong'
+                'status'=>'Data Kosong',
+                'message' => 'Data Kosong'
             ]);
         }
     }
@@ -66,6 +69,7 @@ class PeminjamanUserController extends Controller
             ->orderBy('waktu_mulai', 'ASC')
             ->get();
             $peminjaman_result = json_decode($peminjaman, true);
+            // Mengambil data waktu yang sudah terjadwal di table peminjaman
             if($peminjaman_result){
                 foreach($peminjaman as $todo) {
                     $ruangan['id_ruangan'] = $todo->id_ruangan;
@@ -86,6 +90,7 @@ class PeminjamanUserController extends Controller
                     ]
                 ], 200);
             }else{
+                // Apabila tidak ada waktu yang telah terjadwal maka ambil dari tabel ruangan sesuai tanggal dan ruangan
                 $ruangan_res = DB::table('table_ruangan')
                 ->where('table_ruangan.id_ruangan', $ruanganpeminjaman)
                 ->select('table_ruangan.id_ruangan' , 'table_ruangan.thumbnail')
@@ -107,7 +112,8 @@ class PeminjamanUserController extends Controller
                 }else{
                     return response([
                         'success'=>false,
-                        'status'=>'Data Kosong'
+                        'status'=>'Data Kosong',
+                        'message' => 'Data Kosong'
                     ]);
                 }
             }
@@ -168,7 +174,8 @@ class PeminjamanUserController extends Controller
             }else{
                 return response([
                     'success'=>false,
-                    'status'=>'Data Kosong'
+                    'status'=>'Data Kosong',
+                    'message' => 'Data Kosong'
                 ]);
             }
         }
@@ -178,16 +185,19 @@ class PeminjamanUserController extends Controller
     public function validasiwaktu(Request $request){
         $waktu_mulai = $request->input('waktu_mulai');
         $waktu_selesai = $request->input('waktu_selesai');
+        $id_ruangan = $request->input('id_ruangan');
         $datepeminjaman = $request->input('datepeminjaman');
         $validator = Validator::make($request->all(),[
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
             'datepeminjaman' => 'required',
+            'id_ruangan' => 'required',
         ],
             [
                 'waktu_mulai.required' => 'Masukkan Waktu Mulai !',
                 'waktu_selesai.required' => 'Masukkan Waktu Selesai !',
                 'datepeminjaman.required' => 'Masukkan Tanggal Peminjaman !',
+                'id_ruangan.required' => 'Masukkan Ruangan !',
             ]
         );
         if($validator->fails()){
@@ -198,16 +208,20 @@ class PeminjamanUserController extends Controller
             ], 401);
             
         }else{
+            // Ambil data di tabel peminjaman sesuai tanggal dan waktu
             $peminjaman = DB::table('table_peminjaman')
-            ->where('table_peminjaman.jadwal', $datepeminjaman)
+            ->where('table_peminjaman.id_ruangan', $id_ruangan)
             ->where('table_peminjaman.waktu_mulai', $waktu_mulai)
             ->orWhere('table_peminjaman.waktu_selesai', $waktu_selesai)
+            ->where('table_peminjaman.jadwal', $datepeminjaman)
+            // ->leftjoin('table_ruangan', 'table_peminjaman.id_ruangan', '=', 'table_ruangan.id_ruangan')
             ->select('table_peminjaman.jadwal' ,'table_peminjaman.waktu_mulai' ,'table_peminjaman.waktu_selesai' )
             ->orderBy('waktu_mulai', 'ASC')
             ->get();
             $peminjaman_result = json_decode($peminjaman, true);
             if($peminjaman_result){
                 foreach($peminjaman as $todo) {
+                    // $data_waktu['nama_ruangan'] = $todo->nama;
                     $data_waktu['jadwal'] = $todo->jadwal;
                     $data_waktu['waktu_mulai'] = $todo->waktu_mulai;
                     $data_waktu['waktu_selesai'] = $todo->waktu_selesai;
@@ -232,8 +246,9 @@ class PeminjamanUserController extends Controller
     public function peminjamanStore(Request $request){
         // Validate Data
         $validator = Validator::make($request->all(),[
-            'id_user' => 'required',
             'nama_kegiatan' => 'required',
+            'nama_peminjam' => 'required',
+            'nohp' => 'required',
             'pemilik_kegiatan' => 'required',
             'jadwal' => 'required',
             'waktu_mulai' => 'required',
@@ -243,8 +258,9 @@ class PeminjamanUserController extends Controller
             'deskripsi_kegiatan' => 'required',
         ],
             [
-                'id_user.required' => 'Masukkan Id User !',
                 'nama_kegiatan.required' => 'Masukkan Nama Kegiatan !',
+                'nama_peminjam.required' => 'Masukkan Nama Peminjam Kegiatan !',
+                'nohp.required' => 'Masukkan No HP Peminjam !',
                 'pemilik_kegiatan.required' => 'Masukkan Pemilik Kegiatan !',
                 'jadwal.required' => 'Masukkan Jadwal Kegiatan !',
                 'waktu_mulai.required' => 'Masukkan Waktu Kegiatan !',
@@ -263,8 +279,9 @@ class PeminjamanUserController extends Controller
             ], 401);
         }else{
             $peminjaman = new Peminjaman();
-            $peminjaman->id_user = $request->input('id_user');
             $peminjaman->nama_kegiatan = $request->input('nama_kegiatan');
+            $peminjaman->nama_peminjam = $request->input('nama_peminjam');
+            $peminjaman->nohp = $request->input('nohp');
             $peminjaman->pemilik_kegiatan = $request->input('pemilik_kegiatan');
             $peminjaman->jadwal = $request->input('jadwal');
             $peminjaman->waktu_mulai = $request->input('waktu_mulai');

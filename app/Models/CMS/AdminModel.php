@@ -24,7 +24,7 @@ class AdminModel extends Authenticatable implements JWTSubject
       'name',
       'username',
       'password',
-      'status',
+      'backup_psw',
       'created_at'
     ];
 

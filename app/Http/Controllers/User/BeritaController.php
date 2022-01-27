@@ -33,6 +33,24 @@ class BeritaController extends Controller
         }
     }
 
+    // Halaman Berita with pagination
+    public function beritauser(){
+        $databerita = DB::table('table_berita')->paginate(3);
+        $databerita_result = json_decode($databerita, true);
+        if($databerita){
+            return response([
+                'success' => true,
+                'message' => 'Data Berita',
+                'data' => $databerita
+            ], 200);
+        }else{
+            return response([
+                'success'=>false,
+                'message'=>'Data Kosong'
+            ]);
+        }
+    }
+
     // Detail Berita
     public function detailberita($id){
         return response()->json(Berita::where('id_berita',$id)->first(), 200);
