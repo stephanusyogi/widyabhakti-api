@@ -215,28 +215,27 @@ class PeminjamanController extends Controller
     public function peminjamanSave(Request $request){
         // Validate Data
         $validator = Validator::make($request->all(),[
-            'id_user' => 'required',
             'nama_kegiatan' => 'required',
             'pemilik_kegiatan' => 'required',
+            'nama_peminjam' => 'required',
+            'nohp' => 'required',
             'jadwal' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
             'id_ruangan' => 'required',
             'jumlah_orang' => 'required',
-            'deskripsi_kegiatan' => 'required',
-            'keterangan_tambahan' => 'required'
         ],
             [
                 'id_user.required' => 'Masukkan Id User !',
                 'nama_kegiatan.required' => 'Masukkan Nama Kegiatan !',
                 'pemilik_kegiatan.required' => 'Masukkan Pemilik Kegiatan !',
+                'nama_peminjam.required' => 'Masukkan Pemilik Kegiatan !',
+                'nohp.required' => 'Masukkan Pemilik Kegiatan !',
                 'jadwal.required' => 'Masukkan Jadwal Kegiatan !',
                 'waktu_mulai.required' => 'Masukkan Waktu Mulai Kegiatan !',
                 'waktu_selesai.required' => 'Masukkan Waktu Selesai Kegiatan !',
                 'id_ruangan.required' => 'Masukkan Id Ruangan !',
                 'jumlah_orang.required' => 'Masukkan Jumlah Kegiatan !',
-                'deskripsi_kegiatan.required' => 'Masukkan Deskripsi Kegiatan !',
-                'keterangan_tambahan.required' => 'Masukkan Keterangan Kegiatan !'
             ]
         );
 
@@ -248,9 +247,10 @@ class PeminjamanController extends Controller
             ], 401);
         }else{
             $peminjaman = new Peminjaman();
-            $peminjaman->id_user = $request->input('id_user');
             $peminjaman->nama_kegiatan = $request->input('nama_kegiatan');
             $peminjaman->pemilik_kegiatan = $request->input('pemilik_kegiatan');
+            $peminjaman->nama_peminjam = $request->input('nama_peminjam');
+            $peminjaman->nohp = $request->input('nohp');
             $peminjaman->jadwal = $request->input('jadwal');
             $peminjaman->waktu_mulai = $request->input('waktu_mulai');
             $peminjaman->waktu_selesai = $request->input('waktu_selesai');
@@ -277,28 +277,27 @@ class PeminjamanController extends Controller
     public function peminjamanUpdate(Request $request){
         // Validate Data
         $validator = Validator::make($request->all(),[
-            'id_user' => 'required',
             'nama_kegiatan' => 'required',
             'pemilik_kegiatan' => 'required',
+            'nama_peminjam' => 'required',
+            'nohp' => 'required',
             'jadwal' => 'required',
             'waktu_mulai' => 'required',
             'waktu_selesai' => 'required',
             'id_ruangan' => 'required',
             'jumlah_orang' => 'required',
-            'deskripsi_kegiatan' => 'required',
-            'keterangan_tambahan' => 'required',
         ],
             [
                 'id_user.required' => 'Masukkan Id User !',
                 'nama_kegiatan.required' => 'Masukkan Nama Kegiatan !',
                 'pemilik_kegiatan.required' => 'Masukkan Pemilik Kegiatan !',
+                'nama_peminjam.required' => 'Masukkan Pemilik Kegiatan !',
+                'nohp.required' => 'Masukkan Pemilik Kegiatan !',
                 'jadwal.required' => 'Masukkan Jadwal Kegiatan !',
-                'waktu_mulai.required' => 'Masukkan Waktu Kegiatan !',
-                'waktu_selesai.required' => 'Masukkan Waktu Kegiatan !',
+                'waktu_mulai.required' => 'Masukkan Waktu Mulai Kegiatan !',
+                'waktu_selesai.required' => 'Masukkan Waktu Selesai Kegiatan !',
                 'id_ruangan.required' => 'Masukkan Id Ruangan !',
                 'jumlah_orang.required' => 'Masukkan Jumlah Kegiatan !',
-                'deskripsi_kegiatan.required' => 'Masukkan Deskripsi Kegiatan !',
-                'keterangan_tambahan.required' => 'Masukkan Keterangan Kegiatan !',
             ]
         );
         
@@ -314,15 +313,15 @@ class PeminjamanController extends Controller
             $peminjaman = Peminjaman::where('id_peminjaman', $request->input('id_peminjaman'))->update([
                 'nama_kegiatan' => $request->input('nama_kegiatan'),
                 'pemilik_kegiatan' => $request->input('pemilik_kegiatan'),
+                'nama_peminjam' => $request->input('nama_peminjam'),
+                'nohp' => $request->input('nohp'),
                 'jadwal' => $request->input('jadwal'),
                 'waktu_mulai' => $request->input('waktu_mulai'),
                 'waktu_selesai' => $request->input('waktu_selesai'),
-                'id_user' => $request->input('id_user'),
                 'id_ruangan' => $request->input('id_ruangan'),
                 'jumlah_orang' => $request->input('jumlah_orang'),
                 'deskripsi_kegiatan' => $request->input('deskripsi_kegiatan'),
                 'keterangan_tambahan' => $request->input('keterangan_tambahan'),
-                'rutin' => $request->input('rutin'),
                 'id_admin' => $request->input('id_admin'),
                 'status' => $request->input('status'),
                 'pesan_admin' => $request->input('pesan_admin')
