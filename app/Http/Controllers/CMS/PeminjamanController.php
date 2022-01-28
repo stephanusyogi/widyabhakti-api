@@ -61,35 +61,134 @@ class PeminjamanController extends Controller
         }
     }
 
-    public function peminjamanrutin(){
+    public function peminjamanapproved(){
         // die(var_dump('test'));
         $peminjaman = DB::table('table_peminjaman')
         ->leftjoin('table_ruangan', 'table_peminjaman.id_ruangan', '=', 'table_ruangan.id_ruangan')
         ->leftjoin('table_admin', 'table_peminjaman.id_admin', '=', 'table_admin.id')
-        ->leftjoin('table_user', 'table_peminjaman.id_user', '=', 'table_user.id')
-        ->select('table_peminjaman.*' , 'table_user.name as nama_user', 'table_user.nohp as nomor_user', 'table_admin.name as nama_admin', 'table_ruangan.nama as nama_ruangan', 'table_ruangan.lantai as lantai_ruangan', 'table_ruangan.thumbnail')
+        ->select('table_peminjaman.*' ,'table_admin.name as nama_admin', 'table_ruangan.nama as nama_ruangan', 'table_ruangan.lantai as lantai_ruangan', 'table_ruangan.thumbnail')
         ->groupBy('table_peminjaman.id_peminjaman')
-        ->where('rutin',1)
+        ->where('status', 'approved')
         ->get();
         $peminjaman_result = json_decode($peminjaman, true);
         if($peminjaman_result){
             foreach($peminjaman as $todo) {
                 $output['id_peminjaman'] = $todo->id_peminjaman;
-                $output['id_user'] = $todo->id_user;
-                $output['nama_user'] = $todo->nama_user;
-                $output['nomor_user'] = $todo->nomor_user;
                 $output['nama_kegiatan'] = $todo->nama_kegiatan;
                 $output['pemilik_kegiatan'] = $todo->pemilik_kegiatan;
+                $output['nama_peminjam'] = $todo->nama_peminjam;
+                $output['nohp'] = $todo->nohp;
                 $output['jadwal'] = $todo->jadwal;
                 $output['waktu_mulai'] = $todo->waktu_mulai;
                 $output['waktu_selesai'] = $todo->waktu_selesai;
                 $output['id_ruangan'] = $todo->id_ruangan;
                 $output['nama_ruangan'] = $todo->nama_ruangan;
+                $output['thumbnail'] = $todo->thumbnail;
                 $output['lantai_ruangan'] = $todo->lantai_ruangan;
                 $output['jumlah_orang'] = $todo->jumlah_orang;
                 $output['deskripsi_kegiatan'] = $todo->deskripsi_kegiatan;
                 $output['keterangan_tambahan'] = $todo->keterangan_tambahan;
-                $output['rutin'] = $todo->rutin;
+                $output['id_admin'] = $todo->id_admin;
+                $output['nama_admin'] = $todo->nama_admin;
+                $output['status'] = $todo->status;
+                $output['pesan_admin'] = $todo->pesan_admin;
+                $output['created_at'] = $todo->created_at;
+                $output['updated_at'] = $todo->updated_at;
+            
+                $outputs[] = $output;
+            }
+            return response([
+                'success' => true,
+                'message' => 'List Semua Peminjaman',
+                'data' => $outputs
+            ], 200);
+        }else{
+            return response([
+                'success'=>false,
+                'status'=>'Data Kosong',
+                'message' => 'Data Kosong'
+            ]);
+        }
+    }
+
+    public function peminjamanpending(){
+        // die(var_dump('test'));
+        $peminjaman = DB::table('table_peminjaman')
+        ->leftjoin('table_ruangan', 'table_peminjaman.id_ruangan', '=', 'table_ruangan.id_ruangan')
+        ->leftjoin('table_admin', 'table_peminjaman.id_admin', '=', 'table_admin.id')
+        ->select('table_peminjaman.*' , 'table_admin.name as nama_admin', 'table_ruangan.nama as nama_ruangan', 'table_ruangan.lantai as lantai_ruangan', 'table_ruangan.thumbnail')
+        ->groupBy('table_peminjaman.id_peminjaman')
+        ->where('status','pending')
+        ->get();
+        $peminjaman_result = json_decode($peminjaman, true);
+        if($peminjaman_result){
+            foreach($peminjaman as $todo) {
+                $output['id_peminjaman'] = $todo->id_peminjaman;
+                $output['nama_kegiatan'] = $todo->nama_kegiatan;
+                $output['pemilik_kegiatan'] = $todo->pemilik_kegiatan;
+                $output['nama_peminjam'] = $todo->nama_peminjam;
+                $output['nohp'] = $todo->nohp;
+                $output['jadwal'] = $todo->jadwal;
+                $output['waktu_mulai'] = $todo->waktu_mulai;
+                $output['waktu_selesai'] = $todo->waktu_selesai;
+                $output['id_ruangan'] = $todo->id_ruangan;
+                $output['nama_ruangan'] = $todo->nama_ruangan;
+                $output['thumbnail'] = $todo->thumbnail;
+                $output['lantai_ruangan'] = $todo->lantai_ruangan;
+                $output['jumlah_orang'] = $todo->jumlah_orang;
+                $output['deskripsi_kegiatan'] = $todo->deskripsi_kegiatan;
+                $output['keterangan_tambahan'] = $todo->keterangan_tambahan;
+                $output['id_admin'] = $todo->id_admin;
+                $output['nama_admin'] = $todo->nama_admin;
+                $output['status'] = $todo->status;
+                $output['pesan_admin'] = $todo->pesan_admin;
+                $output['created_at'] = $todo->created_at;
+                $output['updated_at'] = $todo->updated_at;
+            
+                $outputs[] = $output;
+
+            }
+            return response([
+                'success' => true,
+                'message' => 'List Semua Peminjaman',
+                'data' => $outputs
+            ], 200);
+        }else{
+            return response([
+                'success'=>false,
+                'status'=>'Data Kosong',
+                'message' => 'Data Kosong'
+            ]);
+        }
+    }
+    
+    public function peminjamanrejected(){
+        // die(var_dump('test'));
+        $peminjaman = DB::table('table_peminjaman')
+        ->leftjoin('table_ruangan', 'table_peminjaman.id_ruangan', '=', 'table_ruangan.id_ruangan')
+        ->leftjoin('table_admin', 'table_peminjaman.id_admin', '=', 'table_admin.id')
+        ->select('table_peminjaman.*' , 'table_admin.name as nama_admin', 'table_ruangan.nama as nama_ruangan', 'table_ruangan.lantai as lantai_ruangan', 'table_ruangan.thumbnail')
+        ->groupBy('table_peminjaman.id_peminjaman')
+        ->where('status','rejected')
+        ->get();
+        $peminjaman_result = json_decode($peminjaman, true);
+        if($peminjaman_result){
+            foreach($peminjaman as $todo) {
+                $output['id_peminjaman'] = $todo->id_peminjaman;
+                $output['nama_kegiatan'] = $todo->nama_kegiatan;
+                $output['pemilik_kegiatan'] = $todo->pemilik_kegiatan;
+                $output['nama_peminjam'] = $todo->nama_peminjam;
+                $output['nohp'] = $todo->nohp;
+                $output['jadwal'] = $todo->jadwal;
+                $output['waktu_mulai'] = $todo->waktu_mulai;
+                $output['waktu_selesai'] = $todo->waktu_selesai;
+                $output['id_ruangan'] = $todo->id_ruangan;
+                $output['nama_ruangan'] = $todo->nama_ruangan;
+                $output['thumbnail'] = $todo->thumbnail;
+                $output['lantai_ruangan'] = $todo->lantai_ruangan;
+                $output['jumlah_orang'] = $todo->jumlah_orang;
+                $output['deskripsi_kegiatan'] = $todo->deskripsi_kegiatan;
+                $output['keterangan_tambahan'] = $todo->keterangan_tambahan;
                 $output['id_admin'] = $todo->id_admin;
                 $output['nama_admin'] = $todo->nama_admin;
                 $output['status'] = $todo->status;

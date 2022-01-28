@@ -136,7 +136,11 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::get("peminjaman",'CMS\PeminjamanController@peminjaman');
 
-    Route::get("peminjamanrutin",'CMS\PeminjamanController@peminjamanrutin');
+    Route::get("peminjamanapproved",'CMS\PeminjamanController@peminjamanapproved');
+
+    Route::get("peminjamanpending",'CMS\PeminjamanController@peminjamanpending');
+    
+    Route::get("peminjamanrejected",'CMS\PeminjamanController@peminjamanrejected');
 
     Route::get("peminjamanById/{id}",'CMS\PeminjamanController@peminjamanById');
 
