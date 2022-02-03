@@ -258,6 +258,9 @@ class PeminjamanController extends Controller
             $peminjaman->jumlah_orang = $request->input('jumlah_orang');
             $peminjaman->deskripsi_kegiatan = $request->input('deskripsi_kegiatan');
             $peminjaman->keterangan_tambahan = $request->input('keterangan_tambahan');
+            $peminjaman->id_admin = $request->input('id_admin');
+            $peminjaman->status = $request->input('status');
+            $peminjaman->pesan_admin = $request->input('pesan_admin');
             $peminjaman->save();
 
             if($peminjaman){
@@ -288,7 +291,6 @@ class PeminjamanController extends Controller
             'jumlah_orang' => 'required',
         ],
             [
-                'id_user.required' => 'Masukkan Id User !',
                 'nama_kegiatan.required' => 'Masukkan Nama Kegiatan !',
                 'pemilik_kegiatan.required' => 'Masukkan Pemilik Kegiatan !',
                 'nama_peminjam.required' => 'Masukkan Pemilik Kegiatan !',
